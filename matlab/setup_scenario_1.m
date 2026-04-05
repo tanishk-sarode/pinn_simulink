@@ -55,37 +55,23 @@ for bi = 1:numel(mach_blocks)
 end
 
 if isempty(g1_block)
-    fprintf('[WARN] G1 (247.5 MVA) block not found — fix machine params manually.\n');
-    fprintf('         RotorType = Round, PolePairs = 1\n');
+    fprintf('[WARN] G1 (247.5 MVA) block not found — fix Reactances1 manually.\n');
     fprintf('         Reactances1 = [0.8958 0.1198 0.0969 0.8645 0.1198 0.0969 0.0521]\n');
 else
     fprintf('[OK] Found G1 block: %s\n', g1_block);
-    % 1) Rotor type
-    try
-        set_param(g1_block, 'RotorType', 'Round');
-        fprintf('[OK] G1 RotorType = Round\n');
-    catch e1
-        try
-            set_param(g1_block, 'Rotor_type', 'Round');
-            fprintf('[OK] G1 Rotor_type = Round\n');
-        catch
-            fprintf('[WARN] G1 RotorType: %s\n', e1.message);
-        end
-    end
-    % 2) Pole pairs (steam turbine = 3600 rpm = 1 pair at 60 Hz)
-    try
-        set_param(g1_block, 'PolePairs', '1');
-        fprintf('[OK] G1 PolePairs = 1\n');
-    catch e2
-        fprintf('[WARN] G1 PolePairs: %s\n', e2.message);
-    end
-    % 3) Reactances [Xd Xd' Xd'' Xq Xq' Xq'' Xl] — machine base pu
+    % NOTE: Do NOT change RotorType or PolePairs — this old SimPowerSystems
+    % block's mask init crashes if RotorType is switched programmatically.
+    % Fixing Reactances1 (was [31..37] placeholder) is sufficient to correct
+    % the load-flow solution and match RK4 dynamics.
+    %
+    % Reactances [Xd Xd' Xd'' Xq Xq' Xq'' Xl] — machine base pu (Anderson & Fouad IEEE 9-bus)
     correct_react = '[0.8958, 0.1198, 0.0969, 0.8645, 0.1198, 0.0969, 0.0521]';
     try
         set_param(g1_block, 'Reactances1', correct_react);
         fprintf('[OK] G1 Reactances1 = %s\n', correct_react);
     catch e3
         fprintf('[WARN] G1 Reactances1: %s\n', e3.message);
+        fprintf('       Open model manually and set Reactances1 to %s\n', correct_react);
     end
 end
 fprintf('\n');
