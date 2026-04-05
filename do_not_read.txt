@@ -1,0 +1,70 @@
+got this error while running the scenario_2 setup.m file 
+->In mask of 'scenario_2/Three-Phase Fault' block: Transition times must be defined in increasing order.
+
+terminal -> 
+
+[SKIP] scenario_2.slx already exists
+[OK] Loaded scenario_2
+[OK] PreLoadFcn set: ct = 5/60 = 0.08333 s (load outage time)
+[OK] StopTime = 2.0 s
+
+[INFO] Searching for load-related blocks near Bus 8...
+Blocks containing "Load" and "8" in name:
+  -> scenario_2/Load Flow Bus8
+
+[ACTION NEEDED]
+  Locate the Bus 8 load block (125 MW / 50 MVAR).
+  Split into two 62.5 MW / 25 MVAR halves.
+  Add Three-Phase Breaker in series with one half:
+    SwitchTimes = [ct]  (already set in PreLoadFcn)
+    Initial state = closed, transitions to open.
+
+[OK] Found 3 machine block(s). Setting initial rotor angles...
+  G1 (scenario_2/128 MVA 13.8kV
+3600 rpm): InitialConditions = 2.1500 deg
+  G2 (scenario_2/192 MVA 18kV
+3600 rpm): InitialConditions = 18.9000 deg
+  G3 (scenario_2/247.5 MVA 
+16.5 kV
+180 rpm): InitialConditions = 12.5000 deg
+[SKIP] Block already exists: delta1_sim
+[SKIP] Block already exists: delta2_sim
+[SKIP] Block already exists: delta3_sim
+[SKIP] Block already exists: omega1_sim
+[SKIP] Block already exists: omega2_sim
+[SKIP] Block already exists: omega3_sim
+Warning: Block diagram 'scenario_2' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave
+as you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link
+    Tool. - Open
+ 
+Warning: Block diagram 'scenario_2' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave
+as you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link
+    Tool. - Open
+ 
+Warning: Block diagram 'scenario_2' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave
+as you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link
+    Tool. - Open
+ 
+Warning: Block diagram 'scenario_2' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave
+as you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link
+    Tool. - Open
+ 
+
+[DONE] scenario_2.slx saved.
+Next steps:
+  1. Complete the manual Bus 8 load split + breaker (Step 5).
+  2. Run wire_workspace_blocks.m (set mdl = 'scenario_2').
+  3. Run run_simulation.m        (set scenario = 2).
+>> 
