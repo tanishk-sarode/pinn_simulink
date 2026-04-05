@@ -9,70 +9,6 @@ ct =
 [OK] Found G1 block: scenario_1/247.5 MVA 
 16.5 kV
 180 rpm
-[OK] G1 RotorType = Round
-[OK] G1 PolePairs = 1
-[OK] G1 Reactances1 = [0.8958, 0.1198, 0.0969, 0.8645, 0.1198, 0.0969, 0.0521]
-
-[OK] StopTime = 2.0 s
-[OK] Three-Phase Fault    SwitchTimes = [1/600, 5/60]
-[OK] Three-Phase Breaker  SwitchTimes = [1/600, 5/60]
-[OK] Three-Phase Breaker1 SwitchTimes = [1/600, 5/60]
-[OK] Added To Workspace block: delta1_sim
-[OK] Added To Workspace block: delta2_sim
-[OK] Added To Workspace block: delta3_sim
-[OK] Added To Workspace block: omega1_sim
-[OK] Added To Workspace block: omega2_sim
-[OK] Added To Workspace block: omega3_sim
-[OK] Found 3 machine block(s). Setting initial rotor angles...
-  G3 (scenario_1/128 MVA 13.8kV
-3600 rpm): InitialConditions = 13.1752 deg
-  G2 (scenario_1/192 MVA 18kV
-3600 rpm): InitialConditions = 19.7315 deg
-  G1 (scenario_1/247.5 MVA 
-16.5 kV
-180 rpm): InitialConditions = 2.2717 deg
-Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
-the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
-you intended. Support for parameterized links will be removed in a future release.
-Suggested Actions:
-    • You can restore or push the parameterized links in the model using the Library Link Tool.
-    - Open
- 
-Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
-the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
-you intended. Support for parameterized links will be removed in a future release.
-Suggested Actions:
-    • You can restore or push the parameterized links in the model using the Library Link Tool.
-    - Open
- 
-Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
-the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
-you intended. Support for parameterized links will be removed in a future release.
-Suggested Actions:
-    • You can restore or push the parameterized links in the model using the Library Link Tool.
-    - Open
- 
-A copy of the original file "scenario_1.slx" has been created because it was last saved in an earlier version of Simulink. To recover the original version, rename the file "scenario_1.slx.r2013a" as "scenario_1.slx".
-
-You can turn this feature off using the Simulink Preferences. Click here if you don't want to see this message again.
-
-[DONE] scenario_1.slx saved.
-Next step: run wire_workspace_blocks.m
->> 
-
-[OK] Copied IEEE_9bus_new_wow_mach_9.slx -> scenario_1.slx
-
-ct =
-
-    1.0830
-
-[OK] Loaded scenario_1
-[OK] PreLoadFcn set to: ct = 5/60
-[OK] Found G1 block: scenario_1/247.5 MVA 
-16.5 kV
-180 rpm
-[OK] G1 RotorType = Round
-[OK] G1 PolePairs = 1
 [OK] G1 Reactances1 = [0.8958, 0.1198, 0.0969, 0.8645, 0.1198, 0.0969, 0.0521]
 
 [OK] StopTime = 2.0 s
@@ -177,8 +113,6 @@ Suggested Actions:
 Open the model to visually verify connections.
 >> 
 
-
-
 [OK] ct = 0.08333 set in base workspace
 Loading scenario_1...
 Running simulation (StopTime = 2.0 s)...
@@ -200,12 +134,45 @@ Stator, Field, and Dampers parameters.
 In SynchronousMachineInit
 In powericon
 In run_simulation (line 48) 
-Error using run_simulation (line 48)
-Error in 'scenario_1/247.5 MVA  16.5 kV 180 rpm': Failed to evaluate mask initialization
-commands.
-Caused by:
-    Error using run_simulation (line 48)
-    Index exceeds array bounds.
- 
+Warning: A propagation speed of 312815 km/s has been found for mode 2 in block ' Line 4 - 6';
+Propagation speeds must be < 300000 km/s! 
+> In blmodlin
+In ThreePhasePiSectionLineBlock
+In psbsort
+In powersolve
+In powersysdomain_start
+In powersysdomain_netlist
+In powersysdomain
+In run_simulation (line 48) 
+Warning: A propagation speed of 308409 km/s has been found for mode 2 in block 'Line 4 - 5 ';
+Propagation speeds must be < 300000 km/s! 
+> In blmodlin
+In ThreePhasePiSectionLineBlock
+In psbsort
+In powersolve
+In powersysdomain_start
+In powersysdomain_netlist
+In powersysdomain
+In run_simulation (line 48) 
+Warning: A propagation speed of 335656 km/s has been found for mode 1 in block 'Line 7- 8';
+Propagation speeds must be < 300000 km/s! 
+> In blmodlin
+In ThreePhasePiSectionLineBlock
+In psbsort
+In powersolve
+In powersysdomain_start
+In powersysdomain_netlist
+In powersysdomain
+In run_simulation (line 48) 
+Simulation finished in 11.2 s
+Simulink output: 40001 time steps
+Interpolated to 4001 points (T_ref grid)
 
+[IC CHECK] Simulink delta0 (deg): 3.6159  51.6528  49.4434
+[IC CHECK] RK4      delta0 (deg): 2.2717  19.7315  13.1752
+[IC CHECK] Offset              : 1.3442  31.9213  36.2682
+[WARN] Offset > 1 deg — run setup_scenario_1.m again to fix machine ICs.
+[SAVED] scenario_1_simulink_outputs.mat
+Warning: Exported image displays axes toolbar. To remove axes toolbar from image, export again. 
+[PLOT] Saved scenario_1_simulink_quickcheck.png
 >> 
