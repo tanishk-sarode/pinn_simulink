@@ -30,6 +30,132 @@ The source files in `textbook_question_details/` are the scanned pages used.
 
 ---
 
+## Parameter Verification — Full Comparison
+
+This section answers: **"Do I need to manually check and fix anything else besides G1 Reactances1?"**
+
+### About Initial Conditions (delta0, omega0)
+
+**You do NOT need to manually enter initial conditions.**
+The SimPowerSystems powergui Load Flow tool computes and writes the `InitialConditions`
+field for every machine block automatically when you click "Apply to model". The current
+wrong angles (G1≈−86°, G2≈−29°, G3≈−36°) are a consequence of the bad G1 Reactances1
+— once you fix Reactances1 and re-run Load Flow, the angles will update automatically to
+the correct values (~2.27°, ~19.73°, ~13.18°).
+
+The `delta0_sim` and `omega0_sim` exported by `run_scenarios.m` are read back from the
+simulation output (not from InitialConditions), so they will be correct once the load flow
+is fixed.
+
+---
+
+### Which Parameters Matter for Classical Swing Dynamics
+
+Our PINN uses the **classical swing equation model** (same as Phase 1 RK4):
+
+```
+dδ/dt = ω
+dω/dt = (Pm − Pe(δ, Y)) / M    where M = 2H/ωs
+```
+
+In this model, the **per-unit electrical power Pe** depends only on the reduced Y-bus
+matrices (Y_fault, Y_clear) and the **constant internal voltages E**. The Y matrices and
+E values were already derived from textbook Tables 2.4/2.5 and verified in Phase 1.
+
+The Simulink **full d-q machine model** uses Xd'', Xq', Xq'', Xl internally for sub-transient
+flux dynamics — but our PINN physics loss does **not** see these values. Discrepancies in
+Xq', Xl only affect the Simulink reference trajectory slightly (sub-transient rotor oscillations),
+not the PINN physics equations themselves.
+
+**Critical for this study (must be correct):**
+- H on machine base → H_sys (all generators: ✓ already correct)
+- Xd, Xd' for load-flow convergence and E-voltage initialization (G1: broken, G2/G3: ✓)
+- Pref / generator output MW (needed for accurate Pm = Pe at equilibrium)
+- Initial angles delta0 (come from load flow automatically after G1 fix)
+
+**Secondary (discrepancies tolerable for classical swing study):**
+- Xq', Xq'', Xl — used only inside the full d-q machine model, not in PINN physics
+
+---
+
+### Full Parameter Table — All Three Generators
+
+Parameters read from `old_system_params_simulink_file.txt` (pre-fix model dump) vs
+values derived from `table_2.1.jpeg`. Base conversion: `X_Simulink = X_table × (MVA_mach / 100)`.
+
+#### G1 — 247.5 MVA, 16.5 kV, 180 rpm (Hydro, Salient-pole)
+
+| Parameter | Current model value | Expected (Table 2.1 × 2.475) | Match? | Action |
+|-----------|--------------------|-----------------------------|--------|--------|
+| Xd        | 31 (placeholder)   | 0.1460 × 2.475 = **0.3614** | ✗      | **Fix in Step 1** |
+| Xd'       | 32 (placeholder)   | 0.0608 × 2.475 = **0.1505** | ✗      | **Fix in Step 1** |
+| Xd''      | 33 (placeholder)   | ≈ Xd' = **0.1505**          | ✗      | **Fix in Step 1** |
+| Xq        | 34 (placeholder)   | 0.0969 × 2.475 = **0.2399** | ✗      | **Fix in Step 1** |
+| Xq'       | 35 (placeholder)   | ≈ Xq = **0.2399**           | ✗      | **Fix in Step 1** |
+| Xq''      | 36 (placeholder)   | ≈ Xq' = **0.2399**          | ✗      | **Fix in Step 1** |
+| Xl        | 37 (placeholder)   | 0.0336 × 2.475 = **0.0832** | ✗      | **Fix in Step 1** |
+| H (mach base) | 9.55 s         | 2364 MJ / 247.5 = **9.55 s** | ✓     | No change |
+| PolePairs | 20                 | 60 Hz × 60 / 180 rpm = **20** | ✓    | No change |
+| NominalParams | [247.5E6, 16500, 60] | 247.5 MVA, 16.5 kV, 60 Hz | ✓ | No change |
+| Pref (LoadFlow) | 71 MW          | Fig 2.19: G1 output = **71.6 MW** ≈ 71 MW | ✓ | No change |
+
+> Source for all reactances: `textbook_question_details/table_2.1.jpeg`, Gen 1 (Hydro) column.
+> Source for H: `table_2.1.jpeg`, "Stored energy at rated speed" row, Gen 1 = 2364 MJ.
+> Source for Pref: `textbook_question_details/fig_2_19.png`, generator bus output.
+
+#### G2 — 192 MVA, 18 kV, 3600 rpm (Round-rotor / Steam)
+
+| Parameter | Current model value | Expected (Table 2.1 × 1.92) | Match? | Action |
+|-----------|--------------------|-----------------------------|--------|--------|
+| Xd        | 1.72               | 0.8958 × 1.92 = **1.72**   | ✓      | No change |
+| Xd'       | 0.23               | 0.1198 × 1.92 = **0.23**   | ✓      | No change |
+| Xd''      | 0.23               | ≈ Xd' = **0.23**            | ✓      | No change |
+| Xq        | 1.659              | 0.8645 × 1.92 = **1.659**  | ✓      | No change |
+| Xq'       | 0.23               | 0.1969 × 1.92 = **0.378**  | ✗      | *Tolerable — see note* |
+| Xq''      | 0.23               | ≈ Xq' = **0.378**           | ✗      | *Tolerable* |
+| Xl        | 0.4224             | 0.0521 × 1.92 = **0.100**  | ✗      | *Tolerable — see note* |
+| H (mach base) | 3.33 s         | 640 MJ / 192 = **3.33 s**  | ✓      | No change |
+| NominalParams | [192E6, 18000, 60] | 192 MVA, 18 kV, 60 Hz   | ✓      | No change |
+| Pref (LoadFlow) | 163 MW         | Fig 2.19: G2 = **163 MW**  | ✓      | No change |
+
+> *Xq' discrepancy: model has 0.23 = Xd', likely a copy error. Correct value from Table 2.1 is 0.1969 × 1.92 = 0.378.*
+> *Xl discrepancy: model has 0.4224, likely a stale value. Correct is 0.0521 × 1.92 = 0.100.*
+> Neither affects our study because the PINN uses only Xd, Xd', H, and the pre-computed Y matrices.
+> If you want the Simulink reference to be fully textbook-accurate, fix these two values in the G2 block.
+
+#### G3 — 128 MVA, 13.8 kV, 3600 rpm (Round-rotor / Steam)
+
+| Parameter | Current model value | Expected (Table 2.1 × 1.28) | Match? | Action |
+|-----------|--------------------|-----------------------------|--------|--------|
+| Xd        | 1.68               | 1.3125 × 1.28 = **1.68**   | ✓      | No change |
+| Xd'       | 0.232              | 0.1813 × 1.28 = **0.232**  | ✓      | No change |
+| Xd''      | 0.232              | ≈ Xd' = **0.232**           | ✓      | No change |
+| Xq        | 1.659              | 1.2969 × 1.28 = **1.66**   | ✓      | No change |
+| Xq'       | 0.23206            | 0.2500 × 1.28 = **0.320**  | ✗      | *Tolerable — see note* |
+| Xq''      | 0.23206            | ≈ Xq' = **0.320**           | ✗      | *Tolerable* |
+| Xl        | 0.314              | 0.0742 × 1.28 = **0.095**  | ✗      | *Tolerable — see note* |
+| H (mach base) | 2.35 s         | 301 MJ / 128 = **2.35 s**  | ✓      | No change |
+| NominalParams | [128E6, 13800, 60] | 128 MVA, 13.8 kV, 60 Hz | ✓      | No change |
+| Pref (LoadFlow) | 85 MW          | Fig 2.19: G3 = **85 MW**   | ✓      | No change |
+
+> *Xq' and Xl have the same pattern as G2 — likely copy/stale errors from model construction.*
+> Same conclusion: these are secondary and don't affect the classical swing PINN study.
+
+---
+
+### Summary: What to Fix Before Running Phase 2
+
+| Priority | Block | Parameter | Action |
+|----------|-------|-----------|--------|
+| **CRITICAL** | G1 (247.5 MVA) | Reactances1 | Fix to [0.3614, 0.1505, 0.1505, 0.2399, 0.2399, 0.2399, 0.0832] — see Step 1 |
+| **CRITICAL** | All generators | InitialConditions (angles) | Re-run Load Flow after G1 fix — automatic |
+| *Optional* | G2 (192 MVA) | Xq', Xq'', Xl | Fix to [0.378, 0.378, 0.100] for full textbook accuracy |
+| *Optional* | G3 (128 MVA) | Xq', Xq'', Xl | Fix to [0.320, 0.320, 0.095] for full textbook accuracy |
+
+Everything else (H, Xd, Xd'', Xq, NominalParameters, Pref) is already correct for all generators.
+
+---
+
 ## Step 1 — Fix G1 in Simulink GUI (one-time, manual)
 
 The G1 (247.5 MVA Hydro) block has placeholder reactances `[31, 32, 33, 34, 35, 36, 37]`
