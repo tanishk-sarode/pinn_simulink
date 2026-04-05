@@ -71,8 +71,30 @@ delta_sim_i = interp1(t_sim, delta_sim_rad,   T_ref, 'linear', 'extrap');
 omega_sim_i = interp1(t_sim, omega_sim_rads,  T_ref, 'linear', 'extrap');
 fprintf('Interpolated to %d points (T_ref grid)\n', length(T_ref));
 
+%% ---- Verify initial angles match RK4 values ----
+delta0_sim_deg = rad2deg(delta_sim_i(1, :));
+if scenario == 1
+    delta0_rk4_deg = [2.2717, 19.7315, 13.1752];
+else
+    delta0_rk4_deg = [2.1500, 18.9000, 12.5000];
+end
+fprintf('\n[IC CHECK] Simulink delta0 (deg): %.4f  %.4f  %.4f\n', delta0_sim_deg);
+fprintf('[IC CHECK] RK4      delta0 (deg): %.4f  %.4f  %.4f\n', delta0_rk4_deg);
+fprintf('[IC CHECK] Offset              : %.4f  %.4f  %.4f\n', ...
+        delta0_sim_deg - delta0_rk4_deg);
+if max(abs(delta0_sim_deg - delta0_rk4_deg)) > 1.0
+    fprintf('[WARN] Offset > 1 deg — run setup_scenario_%d.m again to fix machine ICs.\n', scenario);
+else
+    fprintf('[OK] Initial angles match RK4 values within 1 deg.\n');
+end
+
 %% ---- Save ----
+% delta0_sim / omega0_sim: t=0 initial state (radians / rad/s).
+% Loaded by PINN notebooks to set hard IC encoding and recompute Pm.
+delta0_sim = delta_sim_i(1, :);   % 1×3, radians
+omega0_sim = omega_sim_i(1, :);   % 1×3, rad/s
 save(out_file, 'T_ref', 'delta_sim_i', 'omega_sim_i', ...
+               'delta0_sim', 'omega0_sim', ...
                't_sim', 'delta_sim_rad', 'omega_sim_rads');
 fprintf('[SAVED] %s\n', out_file);
 

@@ -72,6 +72,53 @@ for i = 1:6
     end
 end
 
+%% STEP 6.5 — Set synchronous machine initial rotor angles (match RK4 values)
+% RK4 steady-state for Scenario 1: delta0 = [2.2717, 19.7315, 13.1752] deg
+% These values come from pinn_rk4/pinn-scenario-1-final.ipynb and are the
+% reference physics parameters for the IEEE 9-bus system.
+delta0_rk4_deg = [2.2717, 19.7315, 13.1752];  % [G1, G2, G3] degrees
+
+% Find all synchronous machine blocks (handles different toolbox versions)
+mach_blocks = [
+    find_system(mdl, 'MaskType', 'Synchronous Machine');
+    find_system(mdl, 'MaskType', 'Synchronous Machine (Simplified)');
+    find_system(mdl, 'RegExp', 'on', 'MaskType', '.*ynchronous.*achine.*')
+];
+mach_blocks = unique(mach_blocks);
+
+if isempty(mach_blocks)
+    fprintf('[WARN] No synchronous machine blocks found — initial angles NOT set.\n');
+    fprintf('       Open scenario_1.slx and set machine initial angles manually:\n');
+    fprintf('       G1 = %.4f deg, G2 = %.4f deg, G3 = %.4f deg\n', delta0_rk4_deg);
+else
+    fprintf('[OK] Found %d machine block(s). Setting initial rotor angles...\n', numel(mach_blocks));
+    mach_blocks = sort(mach_blocks);
+    for gi = 1:min(3, numel(mach_blocks))
+        blk       = mach_blocks{gi};
+        angle_deg = delta0_rk4_deg(gi);
+        success   = false;
+        for param = {'init_IC', 'InitialConditions', 'IC', 'Machine_IC'}
+            try
+                old = get_param(blk, param{1});
+                if isnumeric(old) && numel(old) >= 2
+                    old(2) = angle_deg;
+                    set_param(blk, param{1}, mat2str(old, 6));
+                elseif isnumeric(old) && numel(old) == 1
+                    set_param(blk, param{1}, num2str(angle_deg));
+                end
+                fprintf('  G%d (%s): %s = %.4f deg\n', gi, blk, param{1}, angle_deg);
+                success = true;
+                break;
+            catch
+            end
+        end
+        if ~success
+            fprintf('  [WARN] G%d (%s): could not set angle — set manually to %.4f deg\n', ...
+                    gi, blk, angle_deg);
+        end
+    end
+end
+
 %% STEP 7 — Save
 save_system(mdl);
 fprintf('\n[DONE] scenario_1.slx saved.\n');
