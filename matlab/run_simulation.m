@@ -28,21 +28,18 @@ fprintf('[OK] ct = %.5f set in base workspace\n', ct);
 fprintf('Loading %s...\n', mdl);
 load_system(mdl);
 
-%% ---- Disable fault/breaker blocks for Scenario 2 (load outage only) ----
-% setup_scenario_2.m already does this at model-creation time; this is a
-% safety re-application in case the model was re-loaded without re-running setup.
+%% ---- Disable Three-Phase Fault block for Scenario 2 (load outage only) ----
+% Breakers are intentionally left active — the Bus 8 load-outage breaker
+% is what implements the 50% load disconnection at t = ct.
 if scenario == 2
-    fault_patterns = {'.*[Ff]ault.*', '.*[Bb]reaker.*'};
-    for p = 1:length(fault_patterns)
-        blocks = find_system(mdl, 'RegExp', 'on', 'Name', fault_patterns{p});
-        for bi = 1:length(blocks)
-            try
-                set_param(blocks{bi}, 'Commented', 'on');
-            catch
-            end
+    fault_blocks = find_system(mdl, 'RegExp', 'on', 'Name', '.*[Ff]ault.*');
+    for fi = 1:length(fault_blocks)
+        try
+            set_param(fault_blocks{fi}, 'Commented', 'on');
+        catch
         end
     end
-    fprintf('[OK] Fault/breaker blocks disabled for Scenario 2.\n');
+    fprintf('[OK] Three-Phase Fault block(s) disabled for Scenario 2.\n');
 end
 
 %% ---- Run simulation ----
