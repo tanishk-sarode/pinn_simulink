@@ -30,6 +30,69 @@ fprintf('[OK] Loaded %s\n', mdl);
 set_param(mdl, 'PreLoadFcn', 'ct = 5/60;');
 fprintf('[OK] PreLoadFcn set: ct = 5/60 = %.5f s (load outage time)\n', 5/60);
 
+%% ---- STEP 3.5: Fix G1 (247.5 MVA) machine parameters to IEEE 9-bus standard values ----
+% Diagnostic showed G1 has placeholder Reactances1=[31..37], PolePairs=20 (hydro),
+% RotorType=Salient-pole. These corrupt the load-flow and admittance matrix used
+% by Pe, making dynamics wrong even if initial angles are forced to RK4 values.
+%
+% Correct values: Anderson & Fouad IEEE 9-bus, machine base (pu on 247.5 MVA, 16.5 kV)
+%   [Xd, Xd', Xd'', Xq, Xq', Xq'', Xl] = [0.8958, 0.1198, 0.0969, 0.8645, 0.1198, 0.0969, 0.0521]
+%   PolePairs = 1 (steam turbine, 3600 rpm, 60 Hz)
+%   RotorType = Round
+
+% Find all synchronous machine blocks (reused by Step 5.5 below)
+mach_blocks = [
+    find_system(mdl, 'MaskType', 'Synchronous Machine');
+    find_system(mdl, 'MaskType', 'Synchronous Machine (Simplified)');
+    find_system(mdl, 'RegExp', 'on', 'MaskType', '.*ynchronous.*achine.*')
+];
+mach_blocks = unique(mach_blocks);
+
+% Locate the 247.5 MVA block (G1)
+g1_block = '';
+for bi = 1:numel(mach_blocks)
+    if contains(mach_blocks{bi}, '247')
+        g1_block = mach_blocks{bi};
+        break;
+    end
+end
+
+if isempty(g1_block)
+    fprintf('[WARN] G1 (247.5 MVA) block not found — fix machine params manually.\n');
+    fprintf('         RotorType = Round, PolePairs = 1\n');
+    fprintf('         Reactances1 = [0.8958 0.1198 0.0969 0.8645 0.1198 0.0969 0.0521]\n');
+else
+    fprintf('[OK] Found G1 block: %s\n', g1_block);
+    % 1) Rotor type
+    try
+        set_param(g1_block, 'RotorType', 'Round');
+        fprintf('[OK] G1 RotorType = Round\n');
+    catch e1
+        try
+            set_param(g1_block, 'Rotor_type', 'Round');
+            fprintf('[OK] G1 Rotor_type = Round\n');
+        catch
+            fprintf('[WARN] G1 RotorType: %s\n', e1.message);
+        end
+    end
+    % 2) Pole pairs (steam turbine = 3600 rpm = 1 pair at 60 Hz)
+    try
+        set_param(g1_block, 'PolePairs', '1');
+        fprintf('[OK] G1 PolePairs = 1\n');
+    catch e2
+        fprintf('[WARN] G1 PolePairs: %s\n', e2.message);
+    end
+    % 3) Reactances [Xd Xd' Xd'' Xq Xq' Xq'' Xl] — machine base pu
+    correct_react = '[0.8958, 0.1198, 0.0969, 0.8645, 0.1198, 0.0969, 0.0521]';
+    try
+        set_param(g1_block, 'Reactances1', correct_react);
+        fprintf('[OK] G1 Reactances1 = %s\n', correct_react);
+    catch e3
+        fprintf('[WARN] G1 Reactances1: %s\n', e3.message);
+    end
+end
+fprintf('\n');
+
 %% ---- STEP 4: Simulation stop time ----
 set_param(mdl, 'StopTime', '2.0');
 fprintf('[OK] StopTime = 2.0 s\n');
@@ -115,14 +178,7 @@ fprintf('    Initial state = closed, transitions to open.\n\n');
 % reference physics parameters for the IEEE 9-bus system.
 delta0_rk4_deg = [2.1500, 18.9000, 12.5000];  % [G1, G2, G3] degrees
 
-% Find all synchronous machine blocks (handles different toolbox versions)
-mach_blocks = [
-    find_system(mdl, 'MaskType', 'Synchronous Machine');
-    find_system(mdl, 'MaskType', 'Synchronous Machine (Simplified)');
-    find_system(mdl, 'RegExp', 'on', 'MaskType', '.*ynchronous.*achine.*')
-];
-mach_blocks = unique(mach_blocks);
-
+% mach_blocks already found in Step 3.5 above
 if isempty(mach_blocks)
     fprintf('[WARN] No synchronous machine blocks found — initial angles NOT set.\n');
     fprintf('       Open scenario_2.slx and set machine initial angles manually:\n');
