@@ -129,9 +129,23 @@ if isempty(mach_blocks)
     fprintf('       G1 = %.4f deg, G2 = %.4f deg, G3 = %.4f deg\n', delta0_rk4_deg);
 else
     fprintf('[OK] Found %d machine block(s). Setting initial rotor angles...\n', numel(mach_blocks));
-    mach_blocks = sort(mach_blocks);
-    for gi = 1:min(3, numel(mach_blocks))
-        blk       = mach_blocks{gi};
+    % Map each block to its RK4 generator index by MVA rating, NOT alphabetical sort.
+    % Standard IEEE 9-bus: G1=247.5 MVA (Bus1), G2=192 MVA (Bus2), G3=128 MVA (Bus3).
+    % Alphabetical sort puts 128 MVA first, which would incorrectly assign G1's angle.
+    mva_to_gidx = {{'247', 1}, {'192', 2}, {'128', 3}};
+    for bi = 1:numel(mach_blocks)
+        blk = mach_blocks{bi};
+        gi  = 0;
+        for mi = 1:numel(mva_to_gidx)
+            if contains(blk, mva_to_gidx{mi}{1})
+                gi = mva_to_gidx{mi}{2};
+                break;
+            end
+        end
+        if gi == 0
+            fprintf('  [WARN] Could not identify generator for %s — skipping\n', blk);
+            continue;
+        end
         angle_deg = delta0_rk4_deg(gi);
         success   = false;
         for param = {'init_IC', 'InitialConditions', 'IC', 'Machine_IC'}
