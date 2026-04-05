@@ -34,6 +34,31 @@ fprintf('[OK] PreLoadFcn set: ct = 5/60 = %.5f s (load outage time)\n', 5/60);
 set_param(mdl, 'StopTime', '2.0');
 fprintf('[OK] StopTime = 2.0 s\n');
 
+%% ---- STEP 4.5: Disable all fault/breaker blocks (not needed for load outage) ----
+% Scenario 2 is a load outage, NOT a fault. The Three-Phase Fault and its
+% associated breakers were copied from the base model and have SwitchTimes
+% that cause "Transition times must be in increasing order" errors.
+% Commenting them out (Commented='on') removes them from simulation entirely.
+fault_patterns = {'.*[Ff]ault.*', '.*[Bb]reaker.*'};
+disabled_count = 0;
+for p = 1:length(fault_patterns)
+    blocks = find_system(mdl, 'RegExp', 'on', 'Name', fault_patterns{p});
+    for bi = 1:length(blocks)
+        try
+            set_param(blocks{bi}, 'Commented', 'on');
+            fprintf('[OK] Disabled: %s\n', blocks{bi});
+            disabled_count = disabled_count + 1;
+        catch e
+            fprintf('[WARN] Could not disable %s: %s\n', blocks{bi}, e.message);
+        end
+    end
+end
+if disabled_count == 0
+    fprintf('[INFO] No fault/breaker blocks found to disable.\n');
+else
+    fprintf('[OK] Disabled %d fault/breaker block(s) for load-outage scenario.\n', disabled_count);
+end
+
 %% ---- STEP 5: Locate Bus 8 load blocks for the 50% outage ----
 %
 % This step CANNOT be fully automated because the exact block name
