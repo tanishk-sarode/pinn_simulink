@@ -196,40 +196,91 @@ Open `textbook_question_details/table_2.1.jpeg` and look at the **Gen 1 (Hydro)*
 
 1. Open `matlab/IEEE_9bus_new_wow_mach_9.slx` in MATLAB/Simulink.
 
-2. Double-click the block named **"247.5 MVA 16.5 kV 180 rpm"** (G1).
+2. **Fix G1 — double-click the block named "247.5 MVA 16.5 kV 180 rpm"**
 
-3. In the block dialog, change **Reactances1** to:
+   In the block dialog, change **Reactances1** to:
    ```
    [0.3614, 0.1505, 0.1505, 0.2399, 0.2399, 0.2399, 0.0832]
    ```
-   Format: [Xd, Xd', Xd'', Xq, Xq', Xq'', Xl]
+   Format: `[Xd, Xd', Xd'', Xq, Xq', Xq'', Xl]`
 
-4. Keep all other G1 parameters unchanged — they are already correct:
+   Keep all other G1 parameters unchanged (H, RotorType, PolePairs, NominalParameters are all correct).
+   Click **OK**.
 
-   | Parameter | Current value | Why it's correct |
-   |-----------|--------------|-----------------|
-   | RotorType | Salient-pole | G1 is hydro → salient-pole ✓ |
-   | PolePairs | 20 | 180 rpm at 60 Hz → 60×60/180 = 20 pole pairs ✓ |
-   | Mechanical[0] (H) | 9.55 s | Table 2.1: stored energy = 2364 MJ / 247.5 MVA = 9.55 s (machine base) → 9.55 × 247.5/100 = 23.64 s (system base) ✓ |
-   | NominalParameters | [247.5E6, 16500, 60] | Table 2.1: 247.5 MVA, 16.5 kV, 60 Hz ✓ |
+3. **Fix G2 — double-click the block named "192 MVA 18kV 3600 rpm"**
 
-   Same confirmation for G2 and G3 (already correct, no changes needed):
+   The model has wrong Xq' and Xl values that cause MATLAB to print
+   *"inconsistency in the calculation of fundamental parameters"* warnings.
+   Change **Reactances1** to:
+   ```
+   [1.72, 0.23, 0.23, 1.659, 0.378, 0.378, 0.100]
+   ```
+   Derivation (Table 2.1 × 1.92): Xd=0.8958×1.92=1.72 ✓, Xd'=0.1198×1.92=0.23 ✓,
+   Xq=0.8645×1.92=1.659 ✓, Xq'=0.1969×1.92=**0.378** (was 0.23), Xl=0.0521×1.92=**0.100** (was 0.4224).
+   Click **OK**.
 
-   | Generator | H (machine base) | H (system base) | Source |
-   |-----------|-----------------|-----------------|--------|
-   | G1 (247.5 MVA) | 9.55 s | 9.55 × 2.475 = **23.64 s** | Table 2.1: 2364 MJ / 247.5 MVA |
-   | G2 (192 MVA)   | 3.33 s | 3.33 × 1.920 = **6.40 s**  | Table 2.1: 640 MJ / 192 MVA |
-   | G3 (128 MVA)   | 2.35 s | 2.35 × 1.280 = **3.01 s**  | Table 2.1: 301 MJ / 128 MVA |
+4. **Fix G3 — double-click the block named "128 MVA 13.8kV 3600 rpm"**
 
-5. Click **OK**, then run **powergui → Tools → Load Flow → Compute → Apply to model**.
+   Same issue. Change **Reactances1** to:
+   ```
+   [1.68, 0.232, 0.232, 1.659, 0.320, 0.320, 0.095]
+   ```
+   Derivation (Table 2.1 × 1.28): Xd=1.3125×1.28=1.68 ✓, Xd'=0.1813×1.28=0.232 ✓,
+   Xq=1.2969×1.28=1.659 ✓, Xq'=0.2500×1.28=**0.320** (was 0.232), Xl=0.0742×1.28=**0.095** (was 0.314).
+   Click **OK**.
 
-6. Verify the initial rotor angles match the values from **`example_6_1.png`**
-   (listed as the internal voltage solution in Example 6.1 / Example 2.6):
-   - G1 ≈ **2.2717°** (E₁ = 1.0566 ∠ 2.2717°)
-   - G2 ≈ **19.7315°** (E₂ = 1.0502 ∠ 19.7315°)
-   - G3 ≈ **13.1752°** (E₃ = 1.0170 ∠ 13.1752°)
+5. **Run Load Flow to recompute initial conditions**
 
-7. **Save** `IEEE_9bus_new_wow_mach_9.slx`.
+   The model initial angles are wrong because the load flow last ran with the broken G1.
+   After fixing all three generators, you must re-run it.
+
+   **Option A — via GUI (Simulink):**
+   - In the open model window, look for the **powergui** block (orange/yellow block, usually
+     top-left corner of the model canvas — labelled "Powergui" or "pow ergui").
+   - Double-click it to open the Powergui dialog.
+   - In the dialog, click the **"Load Flow"** button (or look under the **"Tools"** dropdown
+     if you see a menu bar at the top of the dialog).
+   - A Load Flow window opens. Click **"Compute"**, wait for it to converge, then click
+     **"Apply"** (or "Apply to model"). Close the dialog.
+
+   **Option B — via MATLAB command line (easier if GUI is confusing):**
+   ```matlab
+   % Make sure the model is open first
+   open_system('IEEE_9bus_new_wow_mach_9')
+   % Run load flow and apply results automatically
+   power_loadflow('IEEE_9bus_new_wow_mach_9', 'solve')
+   ```
+   This applies the load flow solution directly to the model without needing to navigate the GUI.
+
+6. **Verify the initial rotor angles** — after Load Flow, open the powergui dialog again
+   (or look at the Machine Initialization panel) and check that the angles match:
+   - G1 ≈ **2.2717°** (E₁ = 1.0566, source: `example_6_1.png`)
+   - G2 ≈ **19.7315°** (E₂ = 1.0502, source: `example_6_1.png`)
+   - G3 ≈ **13.1752°** (E₃ = 1.0170, source: `example_6_1.png`)
+
+   Alternatively, run this in MATLAB to read them back after Load Flow:
+   ```matlab
+   % Read InitialConditions of each machine block
+   mdl = 'IEEE_9bus_new_wow_mach_9';
+   open_system(mdl)
+   blocks = find_system(mdl, 'BlockType', 'SubSystem');
+   for i = 1:length(blocks)
+       try
+           ic = get_param(blocks{i}, 'InitialConditions');
+           name = blocks{i}(length(mdl)+2:end);
+           if ~isempty(ic) && ~strcmp(ic, '[]')
+               fprintf('%s: IC = %s\n', name, ic);
+           end
+       catch; end
+   end
+   ```
+
+7. **Save** `IEEE_9bus_new_wow_mach_9.slx` (Ctrl+S in Simulink).
+
+   > **Do NOT run `sim()` on the base model directly.**
+   > All simulations go through `run_scenarios.m` which sets `ct = 5/60` correctly
+   > and copies the model before running. Running `sim()` on the base model will
+   > use whatever `ct` is already in your workspace, which may be wrong.
 
 ---
 
