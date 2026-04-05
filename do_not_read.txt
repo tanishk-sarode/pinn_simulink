@@ -1,315 +1,211 @@
+[OK] Copied IEEE_9bus_new_wow_mach_9.slx -> scenario_1.slx
 
 ct =
 
     1.0830
 
-Loaded: IEEE_9bus_new_wow_mach_9
-
-=== REFERENCE VALUES (RK4-PINN) ===
-Gen          MVA        kV     H (s)   Pm (pu)    E (pu)
-G1         247.5      16.5     23.64     0.716    1.0566
-G2         192.0      18.0      6.40     1.630    1.0502
-G3         128.0      13.8      3.01     0.850    1.0170
-
-=== MACHINE BLOCKS FOUND IN MODEL ===
-Found 3 machine block(s).
-
---- Block 1: IEEE_9bus_new_wow_mach_9/128 MVA 13.8kV
-3600 rpm ---
-  PresetModel                    = No
-  MechanicalLoad                 = Mechanical power Pm
-  ShowDetailedParameters         = on
-  RotorType                      = Round
-  Units                          = per unit standard parameters
-  MeasurementBus                 = off
-  NominalParameters              = [ 128e6  13.8e3   60 ]
-  Reactances1                    = [ 1.68, 0.23206, 0.19, 1.61, 0.23206, 0.19, 0.314]
-  Reactances2                    = [ 1.305, 0.296, 0.252, 0.474,  0.243,  0.18 ]
-  dAxisTimeConstants             = Open-circuit
-  qAxisTimeConstants             = Open-circuit
-  TimeConstants1                 = [ 4.4849  0.0681  0.1  ]
-  TimeConstants2                 = [ 5.89, 0.001,0.6, 0.001 ]
-  TimeConstants3                 = [  4.49  0.0681  0.0513  ]
-  TimeConstants4                 = [ 8.0, 0.03, 0.3371, 0.0295 ]
-  TimeConstants5                 = [ 1.01, 0.053, 0.1 ]
-  TimeConstants6                 = [ 1.3201, 0.023, 1.0, 0.07 ]
-  TimeConstants7                 = [  1.01  0.053  0.051266  ]
-  TimeConstants8                 = [ 1.3201, 0.0231, 0.3371, 0.0295 ]
-  StatorResistance               = 1e-7
-  Mechanical                     = [ 2.35  0 1 ]
-  PolePairs                      = 1
-  InitialConditions              = [0 -36.0034 0.653061 0.653061 0.653061 11.785 -108.215 131.785 1.40359]
-  SetSaturation                  = off
-  Saturation                     = [0.6404,0.7127,0.8441,0.9214,0.9956,1.082,1.19,1.316,1.457;0.7,0.7698,0.8872,0.9466,0.9969,1.046,1.1,1.151,1.201]
-  LoadFlowParameters             = [1 85000000 0 0 0]
-  TsPowergui                     = 0
-  TsBlock                        = -1
-  IterativeModel                 = Trapezoidal non iterative
-  IterativeDiscreteModel         = Trapezoidal non iterative
-  BusType                        = PV
-  Pref                           = 85000000
-  Qref                           = 0
-  Qmin                           = -Inf
-  Qmax                           = Inf
-  PLF                            = 0
-  QLF                            = 0
-  [direct] InitialConditions         = '[0 -36.0034 0.653061 0.653061 0.653061 11.785 -108.215 131.785 1.40359]'
-
---- Block 2: IEEE_9bus_new_wow_mach_9/192 MVA 18kV
-3600 rpm ---
-  PresetModel                    = No
-  MechanicalLoad                 = Mechanical power Pm
-  ShowDetailedParameters         = on
-  RotorType                      = Round
-  Units                          = per unit standard parameters
-  MeasurementBus                 = off
-  NominalParameters              = [ 192e6  18e3   60 ]
-  Reactances1                    = [ 1.72, 0.23, 0.1728,1.65, 0.23, 0.1728, 0.4224 ]
-  Reactances2                    = [ 1.305, 0.296, 0.252, 0.474,  0.243,  0.18 ]
-  dAxisTimeConstants             = Open-circuit
-  qAxisTimeConstants             = Open-circuit
-  TimeConstants1                 = [ 4.4849  0.0681  0.1  ]
-  TimeConstants2                 = [ 6, 0.001, 0.53, 0.001]
-  TimeConstants3                 = [  4.49  0.0681  0.0513  ]
-  TimeConstants4                 = [ 8.0, 0.03, 0.3371, 0.0295 ]
-  TimeConstants5                 = [ 1.01, 0.053, 0.1 ]
-  TimeConstants6                 = [ 1.3201, 0.023, 1.0, 0.07 ]
-  TimeConstants7                 = [  1.01  0.053  0.051266  ]
-  TimeConstants8                 = [ 1.3201, 0.0231, 0.3371, 0.0295 ]
-  StatorResistance               = 1e-7
-  Mechanical                     = [ 3.33  0 1 ]
-  PolePairs                      = 1
-  InitialConditions              = [0 -29.1799 0.828949 0.828949 0.828949 6.81655 -113.183 126.817 1.78946]
-  SetSaturation                  = off
-  Saturation                     = [0.6404,0.7127,0.8441,0.9214,0.9956,1.082,1.19,1.316,1.457;0.7,0.7698,0.8872,0.9466,0.9969,1.046,1.1,1.151,1.201]
-  LoadFlowParameters             = [1 163000000 0 0 0]
-  TsPowergui                     = 0
-  TsBlock                        = -1
-  IterativeModel                 = Trapezoidal non iterative
-  IterativeDiscreteModel         = Trapezoidal non iterative
-  BusType                        = PV
-  Pref                           = 163000000
-  Qref                           = 0
-  Qmin                           = -Inf
-  Qmax                           = Inf
-  PLF                            = 0
-  QLF                            = 0
-  [direct] InitialConditions         = '[0 -29.1799 0.828949 0.828949 0.828949 6.81655 -113.183 126.817 1.78946]'
-
---- Block 3: IEEE_9bus_new_wow_mach_9/247.5 MVA 
-16.5 kV
-180 rpm ---
-  PresetModel                    = No
-  MechanicalLoad                 = Mechanical power Pm
-  ShowDetailedParameters         = on
-  RotorType                      = Salient-pole
-  Units                          = per unit standard parameters
-  MeasurementBus                 = off
-  NominalParameters              = [ 247.5E6  16500   60 ]
-  Reactances1                    = [ 31 32 33 34 35 36 37 ]
-  Reactances2                    = [ 0.361, 0.1504, 0.099, 0.2398, 0.099, 0.062 ]
-  dAxisTimeConstants             = Open-circuit
-  qAxisTimeConstants             = Open-circuit
-  TimeConstants1                 = [8.96 0.001 0.001]
-  TimeConstants2                 = []
-  TimeConstants3                 = []
-  TimeConstants4                 = []
-  TimeConstants5                 = [ 1.01, 0.053, 0.31 ]
-  TimeConstants6                 = []
-  TimeConstants7                 = []
-  TimeConstants8                 = []
-  StatorResistance               = 1e-7
-  Mechanical                     = [9.55 0 20]
-  PolePairs                      = 20
-  InitialConditions              = [0 -86.3839 0.299344 0.299344 0.299344 -20.3492 -140.349 99.6508 1.08182]
-  SetSaturation                  = off
-  Saturation                     = [0.6404,0.7127,0.8441,0.9214,0.9956,1.082,1.19,1.316,1.457;0.7,0.7698,0.8872,0.9466,0.9969,1.046,1.1,1.151,1.201]
-  LoadFlowParameters             = [2 71000000 0 0]
-  TsPowergui                     = 0
-  TsBlock                        = -1
-  IterativeModel                 = Trapezoidal non iterative
-  IterativeDiscreteModel         = Trapezoidal non iterative
-  BusType                        = swing
-  Pref                           = 150000000
-  Qref                           = 0
-  Qmin                           = -Inf
-  Qmax                           = Inf
-  PLF                            = 0
-  QLF                            = 0
-  [direct] InitialConditions         = '[0 -86.3839 0.299344 0.299344 0.299344 -20.3492 -140.349 99.6508 1.08182]'
-
-=== POWERGUI SETTINGS ===
-Found: IEEE_9bus_new_wow_mach_9/powergui
-  SimulationMode                 = Discrete
-  SampleTime                     = 5e-5
-  frequency                      = 60
-  Iterations                     = 50
-  frequencyindice                = 60
-  Pbase                          = 10e7
-  ErrMax                         = 1e-05
-  UnitsV                         = kV
-  UnitsW                         = MW
-  buscounter                     = 0
-  FunctionMessages               = off
-  echomessages                   = off
-  EnableUseOfTLC                 = off
-  CurrentSourceSwitches          = off
-  DisableSnubberDevices          = off
-  DisableRonSwitches             = off
-  DisableVfSwitches              = off
-  DisplayEquations               = off
-  AutomaticDiscreteSolvers       = off
-  SolverType                     = Backward Euler
-  Interpol                       = off
-  ExternalGateDelay              = off
-  methode                        = off
-  Ts                             = 0
-  x0status                       = blocks
-  SPID                           = off
-  SwTol                          = 0
-  HookPort                       = off
-  NonlinearTolerance             = 1e-4
-  nMaxIteration                  = 100
-  ContinueOnMaxIteration         = off
-  RestoreLinks                   = warning
-  ResistiveCurrentMeasurement    = off
-  Frange                         = [0:2:500]
-  Ylog                           = off
-  Xlog                           = on
-  ShowGrid                       = off
-  save                           = off
-  variable                       = ZData
-  structure                      = 0
-  ZoomFFT                        = off
-  StartTime                      = 0.0
-  cycles                         = 1
-  DisplayStyle                   = 1
-  fundamental                    = 60
-  FreqAxis                       = off
-  MaxFrequency                   = 1000
-  frequencyindicesteady          = 1
-  RmsSteady                      = 1
-  display                        = off
-
-=== LOAD BLOCKS (network operating point check) ===
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_1
-  Vbase                          = 16.5e3
-  Vref                           = 1.04
-  VLF                            = 1.04
-  VLFb                           = 1
-  VLFc                           = 1
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus1
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_2
-  Vbase                          = 18e3
-  Vref                           = 1.025
-  VLF                            = 1.025
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 9.166
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus2
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_3
-  Vbase                          = 13.8e3
-  Vref                           = 1.025
-  VLF                            = 1.025
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 4.553
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus3
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_4
-  Vbase                          = 230e3
-  Vref                           = 1
-  VLF                            = 1.026
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 27.77
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus4
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_5
-  Vbase                          = 230e3
-  Vref                           = 1
-  VLF                            = 0.9962
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 25.99
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus5
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_6
-  Vbase                          = 230e3
-  Vref                           = 1
-  VLF                            = 1.013
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 26.3
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus6
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_7
-  Vbase                          = 230e3
-  Vref                           = 1
-  VLF                            = 1.026
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 33.61
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus7
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_8
-  Vbase                          = 230e3
-  Vref                           = 1
-  VLF                            = 1.016
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 30.63
-
-Load: IEEE_9bus_new_wow_mach_9/Load Flow Bus8
-  Phases                         = single
-  Connectors                     = on one side
-  ID                             = BUS_9
-  Vbase                          = 230e3
-  Vref                           = 1
-  VLF                            = 1.032
-  VLFb                           = 1
-  VLFc                           = 1
-  angleLF                        = 31.86
-
-=== GENERATOR ORDERING DIAGNOSIS ===
-Alphabetical sort of machine blocks:
-  Position 1: IEEE_9bus_new_wow_mach_9/128 MVA 13.8kV
-3600 rpm
-  Position 2: IEEE_9bus_new_wow_mach_9/192 MVA 18kV
-3600 rpm
-  Position 3: IEEE_9bus_new_wow_mach_9/247.5 MVA 
+[OK] Loaded scenario_1
+[OK] PreLoadFcn set to: ct = 5/60
+[OK] Found G1 block: scenario_1/247.5 MVA 
 16.5 kV
 180 rpm
+[OK] G1 RotorType = Round
+[OK] G1 PolePairs = 1
+[OK] G1 Reactances1 = [0.8958, 0.1198, 0.0969, 0.8645, 0.1198, 0.0969, 0.0521]
 
-Expected mapping (by MVA rating):
-  247.5 MVA block = G1 (H=23.64, delta0=2.27 deg)
-  192.0 MVA block = G2 (H=6.40,  delta0=19.73 deg)
-  128.0 MVA block = G3 (H=3.01,  delta0=13.18 deg)
+[OK] StopTime = 2.0 s
+[OK] Three-Phase Fault    SwitchTimes = [1/600, 5/60]
+[OK] Three-Phase Breaker  SwitchTimes = [1/600, 5/60]
+[OK] Three-Phase Breaker1 SwitchTimes = [1/600, 5/60]
+[OK] Added To Workspace block: delta1_sim
+[OK] Added To Workspace block: delta2_sim
+[OK] Added To Workspace block: delta3_sim
+[OK] Added To Workspace block: omega1_sim
+[OK] Added To Workspace block: omega2_sim
+[OK] Added To Workspace block: omega3_sim
+[OK] Found 3 machine block(s). Setting initial rotor angles...
+  G3 (scenario_1/128 MVA 13.8kV
+3600 rpm): InitialConditions = 13.1752 deg
+  G2 (scenario_1/192 MVA 18kV
+3600 rpm): InitialConditions = 19.7315 deg
+  G1 (scenario_1/247.5 MVA 
+16.5 kV
+180 rpm): InitialConditions = 2.2717 deg
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+A copy of the original file "scenario_1.slx" has been created because it was last saved in an earlier version of Simulink. To recover the original version, rename the file "scenario_1.slx.r2013a" as "scenario_1.slx".
 
-ACTION: Check if the alphabetical ordering above matches
-        the MVA ordering. If 128 MVA sorts before 247.5 MVA,
-        then alphabetical sort gives WRONG G1/G3 assignment.
+You can turn this feature off using the Simulink Preferences. Click here if you don't want to see this message again.
 
-=== DONE ===
-Compare the machine InitialConditions and Finertia/H values
-against the RK4 reference table printed at the top.
+[DONE] scenario_1.slx saved.
+Next step: run wire_workspace_blocks.m
+>> 
+
+[OK] Copied IEEE_9bus_new_wow_mach_9.slx -> scenario_1.slx
+
+ct =
+
+    1.0830
+
+[OK] Loaded scenario_1
+[OK] PreLoadFcn set to: ct = 5/60
+[OK] Found G1 block: scenario_1/247.5 MVA 
+16.5 kV
+180 rpm
+[OK] G1 RotorType = Round
+[OK] G1 PolePairs = 1
+[OK] G1 Reactances1 = [0.8958, 0.1198, 0.0969, 0.8645, 0.1198, 0.0969, 0.0521]
+
+[OK] StopTime = 2.0 s
+[OK] Three-Phase Fault    SwitchTimes = [1/600, 5/60]
+[OK] Three-Phase Breaker  SwitchTimes = [1/600, 5/60]
+[OK] Three-Phase Breaker1 SwitchTimes = [1/600, 5/60]
+[OK] Added To Workspace block: delta1_sim
+[OK] Added To Workspace block: delta2_sim
+[OK] Added To Workspace block: delta3_sim
+[OK] Added To Workspace block: omega1_sim
+[OK] Added To Workspace block: omega2_sim
+[OK] Added To Workspace block: omega3_sim
+[OK] Found 3 machine block(s). Setting initial rotor angles...
+  G3 (scenario_1/128 MVA 13.8kV
+3600 rpm): InitialConditions = 13.1752 deg
+  G2 (scenario_1/192 MVA 18kV
+3600 rpm): InitialConditions = 19.7315 deg
+  G1 (scenario_1/247.5 MVA 
+16.5 kV
+180 rpm): InitialConditions = 2.2717 deg
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+A copy of the original file "scenario_1.slx" has been created because it was last saved in an earlier version of Simulink. To recover the original version, rename the file "scenario_1.slx.r2013a" as "scenario_1.slx".
+
+You can turn this feature off using the Simulink Preferences. Click here if you don't want to see this message again.
+
+[DONE] scenario_1.slx saved.
+Next step: run wire_workspace_blocks.m
+>> wire_workspace_blocks
+Found 3 generator BusSelector blocks with delta+dw outputs:
+  [1] scenario_1/Bus
+Selector2
+       Outputs: Load angle   delta  (deg),Mechanical.Rotor angle deviation  d_theta (rad),Mechanical.Rotor speed deviation  dw (pu),Mechanical.Rotor mechanical angle  theta (deg)
+  [2] scenario_1/Bus
+Selector3
+       Outputs: Mechanical.Rotor angle deviation  d_theta (rad),Load angle   delta  (deg),Mechanical.Rotor speed deviation  dw (pu),Mechanical.Rotor mechanical angle  theta (deg)
+  [3] scenario_1/Bus
+Selector4
+       Outputs: Mechanical.Rotor angle deviation  d_theta (rad),Load angle   delta  (deg),Mechanical.Rotor speed deviation  dw (pu),Mechanical.Rotor mechanical angle  theta (deg)
+
+Generator assignment:
+  G2 <- scenario_1/Bus
+Selector2
+  G3 <- scenario_1/Bus
+Selector3
+  G1 <- scenario_1/Bus
+Selector4
+[OK] G2: Bus
+Selector2/port1 -> delta2_sim
+[OK] G2: Bus
+Selector2/port3 -> omega2_sim
+[OK] G3: Bus
+Selector3/port2 -> delta3_sim
+[OK] G3: Bus
+Selector3/port3 -> omega3_sim
+[OK] G1: Bus
+Selector4/port2 -> delta1_sim
+[OK] G1: Bus
+Selector4/port3 -> omega1_sim
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find
+the parameterized links use the Model Advisor.  The diagram has been saved but may not behave as
+you intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool.
+    - Open
+ 
+
+[DONE] Wiring complete for scenario_1
+Open the model to visually verify connections.
+>> 
+
+
+
+[OK] ct = 0.08333 set in base workspace
+Loading scenario_1...
+Running simulation (StopTime = 2.0 s)...
+Warning: Simulation results could be inaccurate because the specified Reactance and Time
+constant values are resulting in an inconsistency in the calculation of the fundamental
+(internal) parameters of the model. Replace the 'scenario_1/128 MVA 13.8kV
+3600 rpm' block in your model with a Synchronous Machine pu Fundamental block and provide the
+Stator, Field, and Dampers parameters. 
+> In SynchronousMachineConvert
+In SynchronousMachineInit
+In powericon
+In run_simulation (line 48) 
+Warning: Simulation results could be inaccurate because the specified Reactance and Time
+constant values are resulting in an inconsistency in the calculation of the fundamental
+(internal) parameters of the model. Replace the 'scenario_1/192 MVA 18kV
+3600 rpm' block in your model with a Synchronous Machine pu Fundamental block and provide the
+Stator, Field, and Dampers parameters. 
+> In SynchronousMachineConvert
+In SynchronousMachineInit
+In powericon
+In run_simulation (line 48) 
+Error using run_simulation (line 48)
+Error in 'scenario_1/247.5 MVA  16.5 kV 180 rpm': Failed to evaluate mask initialization
+commands.
+Caused by:
+    Error using run_simulation (line 48)
+    Index exceeds array bounds.
+ 
+
 >> 
