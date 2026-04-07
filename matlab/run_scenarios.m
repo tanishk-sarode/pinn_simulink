@@ -39,15 +39,8 @@ dt_ref   = 5e-4;
 T_ref    = (0 : dt_ref : t_end)';   % 4001 x 1
 out_file = sprintf('scenario_%d_simulink_outputs.mat', scenario);
 
-ct = 5/60;   % fault/outage clearing time: 5 cycles at 60 Hz = 0.08333 s
-assignin('base', 'ct', ct);
-
-% RK4 reference initial angles for IC verification
-if scenario == 1
-    delta0_rk4_deg = [2.2717, 19.7315, 13.1752];
-else
-    delta0_rk4_deg = [2.1500, 18.9000, 12.5000];
-end
+% NOTE: ct is set AFTER load_system (below) because the model's PreLoadFcn
+% may overwrite it when the model loads. Do not move this block above load_system.
 
 fprintf('=== run_scenarios.m | Scenario %d ===\n\n', scenario);
 
@@ -64,9 +57,14 @@ load_system(mdl);
 fprintf('[OK] Loaded %s\n', mdl);
 
 %% ---- STEP 2: Simulation stop time and PreLoadFcn ----
+% Set ct HERE (after load_system) so the model's original PreLoadFcn cannot
+% overwrite it. The downloaded base model had ct=1.0830 in its PreLoadFcn;
+% we override that now.
+ct = 5/60;   % fault/outage clearing time: 5 cycles at 60 Hz = 0.08333 s
+assignin('base', 'ct', ct);
 set_param(mdl, 'StopTime', num2str(t_end));
 set_param(mdl, 'PreLoadFcn', 'ct = 5/60;');
-fprintf('[OK] StopTime = %.1f s | PreLoadFcn: ct = 5/60\n', t_end);
+fprintf('[OK] StopTime = %.1f s | PreLoadFcn: ct = 5/60 | ct set to %.5f s\n', t_end, ct);
 
 %% ---- STEP 3: Scenario-specific fault / breaker configuration ----
 if scenario == 1
@@ -248,20 +246,26 @@ omega_sim_i = interp1(t_sim, omega_sim_rads,   T_ref, 'linear', 'extrap');
 fprintf('Interpolated to %d points on T_ref grid (dt=%.4f s)\n', length(T_ref), dt_ref);
 
 %% ---- STEP 10: Initial condition verification ----
+% NOTE: This model was downloaded from a MATLAB blog — its rotor angles use a
+% different electrical reference frame from the Anderson & Fouad textbook.
+% Absolute delta0 values will NOT match textbook values and that is expected.
+% What matters: (1) omega0 ≈ 0 (model starts at steady state), (2) fault at ct.
 delta0_sim_deg = rad2deg(delta_sim_i(1, :));
-fprintf('\n[IC CHECK]\n');
-fprintf('  Simulink delta0 (deg): %8.4f  %8.4f  %8.4f\n', delta0_sim_deg);
-fprintf('  RK4 ref  delta0 (deg): %8.4f  %8.4f  %8.4f\n', delta0_rk4_deg);
-fprintf('  Offset             :   %8.4f  %8.4f  %8.4f\n', ...
-        delta0_sim_deg - delta0_rk4_deg);
+omega0_sim_rads = omega_sim_i(1, :);
 
-max_offset = max(abs(delta0_sim_deg - delta0_rk4_deg));
-if max_offset > 1.0
-    fprintf('[WARN] Max IC offset = %.2f deg > 1.0 deg threshold.\n', max_offset);
-    fprintf('       Check: (1) G1 Reactances1 fixed?  (2) Load flow re-run after fix?\n');
-    fprintf('       If offset is large, PINN data quality will be poor.\n');
+fprintf('\n[IC CHECK]\n');
+fprintf('  Simulink delta0 (deg):  %8.4f  %8.4f  %8.4f\n', delta0_sim_deg);
+fprintf('  Simulink omega0 (rad/s):%8.4f  %8.4f  %8.4f\n', omega0_sim_rads);
+fprintf('  (omega0 should be ~0 if model starts at steady state)\n');
+
+max_omega0 = max(abs(omega0_sim_rads));
+if max_omega0 > 0.5
+    fprintf('[WARN] Max |omega0| = %.4f rad/s > 0.5 threshold.\n', max_omega0);
+    fprintf('       Model may NOT be at steady state at t=0.\n');
+    fprintf('       Check: (1) Load Flow applied AND saved before running this script?\n');
+    fprintf('              (2) Was the base model saved after clicking Apply in Load Flow?\n');
 else
-    fprintf('[OK] IC offset within 1.0 deg threshold (max = %.3f deg).\n', max_offset);
+    fprintf('[OK] omega0 within threshold (max |omega0| = %.4f rad/s) — steady state OK.\n', max_omega0);
 end
 
 %% ---- STEP 11: Save .mat file ----

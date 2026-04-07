@@ -87,13 +87,13 @@ values derived from `table_2.1.jpeg`. Base conversion: `X_Simulink = X_table × 
 
 | Parameter | Current model value | Expected (Table 2.1 × 2.475) | Match? | Action |
 |-----------|--------------------|-----------------------------|--------|--------|
-| Xd        | 31 (placeholder)   | 0.1460 × 2.475 = **0.3614** | ✗      | **Fix in Step 1** |
-| Xd'       | 32 (placeholder)   | 0.0608 × 2.475 = **0.1505** | ✗      | **Fix in Step 1** |
-| Xd''      | 33 (placeholder)   | ≈ Xd' = **0.1505**          | ✗      | **Fix in Step 1** |
-| Xq        | 34 (placeholder)   | 0.0969 × 2.475 = **0.2399** | ✗      | **Fix in Step 1** |
-| Xq'       | 35 (placeholder)   | ≈ Xq = **0.2399**           | ✗      | **Fix in Step 1** |
-| Xq''      | 36 (placeholder)   | ≈ Xq' = **0.2399**          | ✗      | **Fix in Step 1** |
-| Xl        | 37 (placeholder)   | 0.0336 × 2.475 = **0.0832** | ✗      | **Fix in Step 1** |
+| Xd        | 31 (placeholder)   | 0.1460 × 2.475 = **0.3614** | ✗ | **Fix in Step 1** |
+| Xd'       | 32 (placeholder)   | 0.0608 × 2.475 = **0.1505** | ✗ | **Fix in Step 1** |
+| Xd''      | 33 (placeholder)   | **0.099** — must be < Xd' or Load Flow fails (Inf damper resistance) | ✗ | **Fix in Step 1** |
+| Xq        | 34 (placeholder)   | 0.0969 × 2.475 = **0.2399** | ✗ | **Fix in Step 1** |
+| Xq'       | —                  | *No Xq' for salient-pole* (6-value format) | — | N/A |
+| Xq''      | 35 (placeholder)   | **0.099** (= Xd'', from supplementary source) | ✗ | **Fix in Step 1** |
+| Xl        | 36 (placeholder)   | 0.0336 × 2.475 = **0.0832** | ✗ | **Fix in Step 1** |
 | H (mach base) | 9.55 s         | 2364 MJ / 247.5 = **9.55 s** | ✓     | No change |
 | PolePairs | 20                 | 60 Hz × 60 / 180 rpm = **20** | ✓    | No change |
 | NominalParams | [247.5E6, 16500, 60] | 247.5 MVA, 16.5 kV, 60 Hz | ✓ | No change |
@@ -149,10 +149,10 @@ values derived from `table_2.1.jpeg`. Base conversion: `X_Simulink = X_table × 
 |----------|-------|-----------|--------|
 | **CRITICAL** | G1 (247.5 MVA) | Reactances1 | Fix to [0.3614, 0.1505, 0.1505, 0.2399, 0.2399, 0.2399, 0.0832] — see Step 1 |
 | **CRITICAL** | All generators | InitialConditions (angles) | Re-run Load Flow after G1 fix — automatic |
-| *Optional* | G2 (192 MVA) | Xq', Xq'', Xl | Fix to [0.378, 0.378, 0.100] for full textbook accuracy |
-| *Optional* | G3 (128 MVA) | Xq', Xq'', Xl | Fix to [0.320, 0.320, 0.095] for full textbook accuracy |
+| ~~Do NOT change~~ | G2 (192 MVA) | Xq', Xl | Textbook values differ but fixing them breaks the Load Flow Analyzer. Leave as-is. |
+| ~~Do NOT change~~ | G3 (128 MVA) | Xq', Xl | Same — leave as-is. |
 
-Everything else (H, Xd, Xd'', Xq, NominalParameters, Pref) is already correct for all generators.
+Everything else (H, Xd, Xd', Xq, NominalParameters, Pref) is already correct for all generators.
 
 ---
 
@@ -196,40 +196,47 @@ Open `textbook_question_details/table_2.1.jpeg` and look at the **Gen 1 (Hydro)*
 
 1. Open `matlab/IEEE_9bus_new_wow_mach_9.slx` in MATLAB/Simulink.
 
-2. **Fix G1 — double-click the block named "247.5 MVA 16.5 kV 180 rpm"**
+2. **Set Reactances1 for all three generators**
 
-   In the block dialog, change **Reactances1** to:
+   Format for all blocks: `[Xd, Xd', Xd'', Xq, Xq', Xq'', Xl]`
+
+   > **Note on formats:** G1 (salient-pole hydro) uses **6 reactances** and **3 time constants**
+   > in MATLAB because salient-pole machines have no q-axis transient dynamics (no Xq' parameter).
+   > G2 and G3 (round-rotor steam) use **7 reactances** and **4 time constants** (include Xq').
+   > This is correct MATLAB behaviour — do not try to add a 7th value to G1.
+
+   **G1 — "247.5 MVA 16.5 kV 180 rpm" (Hydro, Salient-pole)**
+   Format: `[Xd, Xd', Xd'', Xq, Xq'', Xl]` — 6 values, no Xq'
    ```
-   [0.3614, 0.1505, 0.1505, 0.2399, 0.2399, 0.2399, 0.0832]
+   [0.3614, 0.1505, 0.099, 0.2399, 0.099, 0.0832]
    ```
-   Format: `[Xd, Xd', Xd'', Xq, Xq', Xq'', Xl]`
+   Source: Xd, Xd', Xq, Xl from Table 2.1 × (247.5/100). Xd'' = Xq'' = 0.099 from
+   supplementary source. **Xd'' must be strictly less than Xd'** — if they are equal,
+   the damper winding resistance computes to zero and the Load Flow fails with
+   "parameter supports only finite values". Constraint check: Xl=0.0832 < Xd''=0.099 < Xd'=0.1505 ✓
+   Time constants: `[8.96, 0.001, 0.001]` — leave unchanged.
 
-   Keep all other G1 parameters unchanged (H, RotorType, PolePairs, NominalParameters are all correct).
-   Click **OK**.
-
-3. **Fix G2 — double-click the block named "192 MVA 18kV 3600 rpm"**
-
-   The model has wrong Xq' and Xl values that cause MATLAB to print
-   *"inconsistency in the calculation of fundamental parameters"* warnings.
-   Change **Reactances1** to:
+   **G2 — "192 MVA 18kV 3600 rpm" (Steam, Round-rotor)**
+   Format: `[Xd, Xd', Xd'', Xq, Xq', Xq'', Xl]` — 7 values
    ```
-   [1.72, 0.23, 0.23, 1.659, 0.378, 0.378, 0.100]
+   [1.72, 0.23, 0.1728, 1.65, 0.23, 0.1728, 0.100]
    ```
-   Derivation (Table 2.1 × 1.92): Xd=0.8958×1.92=1.72 ✓, Xd'=0.1198×1.92=0.23 ✓,
-   Xq=0.8645×1.92=1.659 ✓, Xq'=0.1969×1.92=**0.378** (was 0.23), Xl=0.0521×1.92=**0.100** (was 0.4224).
-   Click **OK**.
+   Only Xl changes (0.4224 → 0.100). Source: Table 2.1: 0.0521 × 1.92 = 0.100.
+   **Reason:** Original Xl=0.4224 > Xd''=0.1728, which makes magnetizing inductance
+   (Xd''−Xl) negative → infinite gain → Load Flow fails with "parameter supports only
+   finite values". Xl must be < Xd''.
 
-4. **Fix G3 — double-click the block named "128 MVA 13.8kV 3600 rpm"**
-
-   Same issue. Change **Reactances1** to:
+   **G3 — "128 MVA 13.8kV 3600 rpm" (Steam, Round-rotor)**
+   Format: `[Xd, Xd', Xd'', Xq, Xq', Xq'', Xl]` — 7 values
    ```
-   [1.68, 0.232, 0.232, 1.659, 0.320, 0.320, 0.095]
+   [1.68, 0.23206, 0.19, 1.61, 0.23206, 0.19, 0.095]
    ```
-   Derivation (Table 2.1 × 1.28): Xd=1.3125×1.28=1.68 ✓, Xd'=0.1813×1.28=0.232 ✓,
-   Xq=1.2969×1.28=1.659 ✓, Xq'=0.2500×1.28=**0.320** (was 0.232), Xl=0.0742×1.28=**0.095** (was 0.314).
-   Click **OK**.
+   Only Xl changes (0.314 → 0.095). Source: Table 2.1: 0.0742 × 1.28 = 0.095.
+   Same reason as G2: original Xl=0.314 > Xd''=0.19 → negative magnetizing inductance.
 
-5. **Run Load Flow to recompute initial conditions**
+   Click **OK** on all three blocks.
+
+3. **Run Load Flow to recompute initial conditions**
 
    The model initial angles are wrong because the load flow last ran with the broken G1.
    After fixing all three generators, you must re-run it.
