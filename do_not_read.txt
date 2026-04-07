@@ -1,7 +1,110 @@
-Reactances [ Xd  Xd'  Xd''  Xq  Xq'  Xq''  Xl ] (pu) = >
+=== run_scenarios.m | Scenario 1 ===
 
-128MVA -> [ 1.68, 0.23206, 0.19, 1.61, 0.23206, 0.19, 0.314]
-192MVA -> [ 1.72, 0.23, 0.1728,1.65, 0.23, 0.1728, 0.4224 ]
-247MVA -> [ 0.361, 0.1504, 0.099, 0.2398, 0.099, 0.062 ]
+[OK] Copied IEEE_9bus_new_wow_mach_9.slx -> scenario_1.slx
 
-Notice something? xd'' and xq'' are same but no equal to either of xq' or xd'
+ct =
+
+    1.0830
+
+[OK] Loaded scenario_1
+[OK] StopTime = 2.0 s | PreLoadFcn: ct = 5/60
+[OK] Three-Phase Fault  SwitchTimes = [0.00166667, 1.083]
+[OK] Three-Phase Breaker  SwitchTimes = [0.00166667, 1.083]
+[OK] Three-Phase Breaker1  SwitchTimes = [0.00166667, 1.083]
+
+[OK] Found 3 generator BusSelector blocks.
+[WARN] Generator auto-assignment ambiguous — using positional order 1,2,3.
+Generator assignment:
+  G1 <- Bus
+Selector2
+  G2 <- Bus
+Selector3
+  G3 <- Bus
+Selector4
+[OK] Added To Workspace: delta1_sim
+[OK] Added To Workspace: omega1_sim
+[OK] Wired G1 delta: port 1 -> delta1_sim
+[OK] Wired G1 omega: port 3 -> omega1_sim
+[OK] Added To Workspace: delta2_sim
+[OK] Added To Workspace: omega2_sim
+[OK] Wired G2 delta: port 2 -> delta2_sim
+[OK] Wired G2 omega: port 3 -> omega2_sim
+[OK] Added To Workspace: delta3_sim
+[OK] Added To Workspace: omega3_sim
+[OK] Wired G3 delta: port 2 -> delta3_sim
+[OK] Wired G3 omega: port 3 -> omega3_sim
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find the
+parameterized links use the Model Advisor.  The diagram has been saved but may not behave as you
+intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool. -
+    Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find the
+parameterized links use the Model Advisor.  The diagram has been saved but may not behave as you
+intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool. -
+    Open
+ 
+Warning: Block diagram 'scenario_1' contains one or more parameterized library links. To find the
+parameterized links use the Model Advisor.  The diagram has been saved but may not behave as you
+intended. Support for parameterized links will be removed in a future release.
+Suggested Actions:
+    • You can restore or push the parameterized links in the model using the Library Link Tool. -
+    Open
+ 
+
+[OK] Saved scenario_1.slx
+
+Running simulation (StopTime = 2.0 s)...
+Warning: A propagation speed of 312815 km/s has been found for mode 2 in block ' Line 4 - 6';
+Propagation speeds must be < 300000 km/s! 
+> In blmodlin
+In ThreePhasePiSectionLineBlock
+In psbsort
+In powersolve
+In powersysdomain_start
+In powersysdomain_netlist
+In powersysdomain
+In run_scenarios (line 221) 
+Warning: A propagation speed of 308409 km/s has been found for mode 2 in block 'Line 4 - 5 ';
+Propagation speeds must be < 300000 km/s! 
+> In blmodlin
+In ThreePhasePiSectionLineBlock
+In psbsort
+In powersolve
+In powersysdomain_start
+In powersysdomain_netlist
+In powersysdomain
+In run_scenarios (line 221) 
+Warning: A propagation speed of 335656 km/s has been found for mode 1 in block 'Line 7- 8';
+Propagation speeds must be < 300000 km/s! 
+> In blmodlin
+In ThreePhasePiSectionLineBlock
+In psbsort
+In powersolve
+In powersysdomain_start
+In powersysdomain_netlist
+In powersysdomain
+In run_scenarios (line 221) 
+Simulation finished in 12.2 s
+Simulink output: 40001 time steps, t=[0.0000, 2.0000] s
+Interpolated to 4001 points on T_ref grid (dt=0.0005 s)
+
+[IC CHECK]
+  Simulink delta0 (deg):  51.6528   49.4434    3.6174
+  RK4 ref  delta0 (deg):   2.2717   19.7315   13.1752
+  Offset             :    49.3811   29.7119   -9.5578
+[WARN] Max IC offset = 49.38 deg > 1.0 deg threshold.
+       Check: (1) G1 Reactances1 fixed?  (2) Load flow re-run after fix?
+       If offset is large, PINN data quality will be poor.
+
+[SAVED] scenario_1_simulink_outputs.mat
+Warning: Exported image displays axes toolbar. To remove axes toolbar from image, export again. 
+[PLOT] Saved scenario_1_simulink_quickcheck.png
+
+=== DONE ===
+Next step: open pinn_simulink/pinn-simulink-scenario-1.ipynb
+           and upload scenario_1_simulink_outputs.mat to Kaggle dataset.
+>> KyK
