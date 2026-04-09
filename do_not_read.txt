@@ -1,3 +1,8 @@
+ct = 5/60;
+out = sim('IEEE_9bus_new_wow_mach_9', [0 0.01]);
+
+
+
 mdl = 'IEEE_9bus_new_wow_mach_9';
 open_system(mdl)
 power_loadflow(mdl, 'solve')
